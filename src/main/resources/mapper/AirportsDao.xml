@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.administration.dao.AirportsDao">
+
+    <resultMap type="com.zh.administration.entity.Airports" id="AirportsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="airportsCode" column="airports_code" jdbcType="VARCHAR"/>
+        <result property="airportsName" column="airports_name" jdbcType="VARCHAR"/>
+        <result property="airportsLocate" column="airports_locate" jdbcType="VARCHAR"/>
+        <result property="airportsArea" column="airports_area" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AirportsMap">
+        select id,
+               airports_code,
+               airports_name,
+               airports_locate,
+               airports_area
+        from airports
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AirportsMap">
+        select
+        id, airports_code, airports_name, airports_locate, airports_area
+        from airports
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="airportsCode != null and airportsCode != ''">
+                and airports_code = #{airportsCode}
+            </if>
+            <if test="airportsName != null and airportsName != ''">
+                and airports_name = #{airportsName}
+            </if>
+            <if test="airportsLocate != null and airportsLocate != ''">
+                and airports_locate = #{airportsLocate}
+            </if>
+            <if test="airportsArea != null and airportsArea != ''">
+                and airports_area = #{airportsArea}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from airports
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="airportsCode != null and airportsCode != ''">
+                and airports_code = #{airportsCode}
+            </if>
+            <if test="airportsName != null and airportsName != ''">
+                and airports_name = #{airportsName}
+            </if>
+            <if test="airportsLocate != null and airportsLocate != ''">
+                and airports_locate = #{airportsLocate}
+            </if>
+            <if test="airportsArea != null and airportsArea != ''">
+                and airports_area = #{airportsArea}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into airports(airports_code, airports_name, airports_locate, airports_area)
+        values (#{airportsCode}, #{airportsName}, #{airportsLocate}, #{airportsArea})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into airports(airports_code, airports_name, airports_locate, airports_area)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.airportsCode}, #{entity.airportsName}, #{entity.airportsLocate}, #{entity.airportsArea})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into airports(airports_code, airports_name, airports_locate, airports_area)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.airportsCode}, #{entity.airportsName}, #{entity.airportsLocate}, #{entity.airportsArea})
+        </foreach>
+        on duplicate key update
+        airports_code = values(airports_code),
+        airports_name = values(airports_name),
+        airports_locate = values(airports_locate),
+        airports_area = values(airports_area)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update airports
+        <set>
+            <if test="airportsCode != null and airportsCode != ''">
+                airports_code = #{airportsCode},
+            </if>
+            <if test="airportsName != null and airportsName != ''">
+                airports_name = #{airportsName},
+            </if>
+            <if test="airportsLocate != null and airportsLocate != ''">
+                airports_locate = #{airportsLocate},
+            </if>
+            <if test="airportsArea != null and airportsArea != ''">
+                airports_area = #{airportsArea},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from airports
+        where id = #{id}
+    </delete>
+
+
+</mapper>
+

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zh.springo.mapper.FlightMapper">
+    <resultMap id="BaseResultMap" type="com.zh.springo.pojo.FlightDomain">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="carrier" jdbcType="VARCHAR" property="carrier"/>
+        <result column="flightNo" jdbcType="VARCHAR" property="flightNo"/>
+        <result column="departureDatetime" jdbcType="VARCHAR" property="departureDatetime"/>
+        <result column="arrivalDatetime" jdbcType="VARCHAR" property="arrivalDatetime"/>
+        <result column="departure" jdbcType="VARCHAR" property="departure"/>
+        <result column="arrival" jdbcType="VARCHAR" property="arrival"/>
+        <result column="airlines_name" jdbcType="VARCHAR" property="airlineName"/>
+        <result column="airlineLogo" jdbcType="VARCHAR" property="airlineLogo"/>
+        <result column="departureAirportName" jdbcType="VARCHAR" property="departureAirportName"/>
+        <result column="arrivalAirportName" jdbcType="VARCHAR" property="arrivalAirportName"/>
+        <result column="departureTerminal" jdbcType="VARCHAR" property="departureTerminal"/>
+        <result column="arrivalTerminal" jdbcType="VARCHAR" property="arrivalTerminal"/>
+        <result column="planeStyle" jdbcType="VARCHAR" property="planeStyle"/>
+        <result column="planeSize" jdbcType="VARCHAR" property="planeSize"/>
+        <result column="seatC" jdbcType="VARCHAR" property="seatC"/>
+        <result column="seatF" jdbcType="VARCHAR" property="seatF"/>
+        <result column="seatY" jdbcType="VARCHAR" property="seatY"/>
+        <result column="amount" jdbcType="VARCHAR" property="amount"/>
+        <result column="cabin" jdbcType="VARCHAR" property="cabin"/>
+        <result column="seatInfos" jdbcType="VARCHAR" property="seatInfos"/>
+    </resultMap>
+
+    <select id="getTicket" resultMap="BaseResultMap">
+        SELECT a.*,
+        d.airlineLogo,
+        d.airlines_name,
+        b.seatC,
+        b.seatF,
+        b.seatY,
+        c.cabin,
+        c.amount,
+        e.sequenceNo,
+        e.nextCarrier,
+        e.surcharge
+        FROM flight AS a
+        LEFT JOIN surplus_seats AS b ON a.flightNo = b.flightNo
+        LEFT JOIN freight_rate AS c ON a.freightRateId = c.id
+        LEFT JOIN air_airlines AS d ON a.airAirlinesId = d.id
+        LEFT JOIN freight_rules AS e ON c.id = e.sequenceNo
+        WHERE
+        <if test="departure != null and departure != ''">
+            a.departure = #{departure}
+            and
+        </if>
+        a.departureDatetime like CONCAT(#{departureDate}, '%')
+        <if test="arrivals != null">
+            and a.arrival in
+            <foreach collection="arrivals" item="a" separator="," open="(" close=")">
+                #{a}
+            </foreach>
+        </if>
+        ORDER BY a.priceFare,a.departureDatetime ASC
+    </select>
+
+
+    <select id="getCities" resultType="java.util.Map">
+        select * from airports where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!--
+    <update id="updateALL" parameterType="com.zzc.air_system.model.AirportsDomain">
+        update flight set arrival = replace(arrival,#{airports_locate},#{airports_code})
+    </update>
+            <select id="retrievalById" resultMap="BaseResultMap">
+                SELECT
+                <include refid="BASE_COLUMN"/>
+                FROM
+                <include refid="BASE_TABLE"/>
+            </select>
+
+            <if test="phone != null"></if>
+
+            <delete id="delete" parameterType="com.example.demo.model.userEntity">
+                delete from
+                <include refid="BASE_TABLE"/>
+                where userId = #{userId}
+            </delete>
+
+            <update id="update" parameterType="com.example.demo.model.userEntity">
+                update
+                <include refid="BASE_TABLE"/>
+                set
+                `userName` = #{userName},`password` = #{password},`phone` = #{phone},`realName` = #{realName}
+                where `userId` = #{userId}
+            </update>-->
+</mapper>

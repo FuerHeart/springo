@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.administration.dao.AirUserDao">
+
+    <resultMap type="com.zh.administration.entity.AirUser" id="AirUserMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="username" column="userName" jdbcType="VARCHAR"/>
+        <result property="password" column="passWord" jdbcType="VARCHAR"/>
+        <result property="realname" column="realName" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="VARCHAR"/>
+        <result property="portrait" column="portrait" jdbcType="VARCHAR"/>
+        <result property="idcard" column="idCard" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AirUserMap">
+        select id,
+               userName,
+               passWord,
+               realName,
+               phone,
+               email,
+               gender,
+               portrait,
+               idCard
+        from air_user
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AirUserMap">
+        select
+        id, userName, passWord, realName, phone, email, gender, portrait, idCard
+        from air_user
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and userName = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and passWord = #{password}
+            </if>
+            <if test="realname != null and realname != ''">
+                and realName = #{realname}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="gender != null and gender != ''">
+                and gender = #{gender}
+            </if>
+            <if test="portrait != null and portrait != ''">
+                and portrait = #{portrait}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and idCard = #{idcard}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from air_user
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and userName = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and passWord = #{password}
+            </if>
+            <if test="realname != null and realname != ''">
+                and realName = #{realname}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="gender != null and gender != ''">
+                and gender = #{gender}
+            </if>
+            <if test="portrait != null and portrait != ''">
+                and portrait = #{portrait}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and idCard = #{idcard}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into air_user(userName, passWord, realName, phone, email, gender, portrait, idCard)
+        values (#{username}, #{password}, #{realname}, #{phone}, #{email}, #{gender}, #{portrait}, #{idcard})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into air_user(userName, passWord, realName, phone, email, gender, portrait, idCard)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.password}, #{entity.realname}, #{entity.phone}, #{entity.email},
+            #{entity.gender}, #{entity.portrait}, #{entity.idcard})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into air_user(userName, passWord, realName, phone, email, gender, portrait, idCard)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.password}, #{entity.realname}, #{entity.phone}, #{entity.email},
+            #{entity.gender}, #{entity.portrait}, #{entity.idcard})
+        </foreach>
+        on duplicate key update
+        userName = values(userName),
+        passWord = values(passWord),
+        realName = values(realName),
+        phone = values(phone),
+        email = values(email),
+        gender = values(gender),
+        portrait = values(portrait),
+        idCard = values(idCard)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update air_user
+        <set>
+            <if test="username != null and username != ''">
+                userName = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                passWord = #{password},
+            </if>
+            <if test="realname != null and realname != ''">
+                realName = #{realname},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="gender != null and gender != ''">
+                gender = #{gender},
+            </if>
+            <if test="portrait != null and portrait != ''">
+                portrait = #{portrait},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                idCard = #{idcard},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from air_user
+        where id = #{id}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "spring.datasource.thymeleaf",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.thymeleaf."
+    },
+    {
+      "name": "spring.redis.max-wait",
+      "type": "java.lang.String",
+      "description": "Description for spring.redis.max-wait."
+    },
+    {
+      "name": "mybatis-plus.global-config.db-config.field-strategy",
+      "type": "java.lang.String",
+      "description": "Description for mybatis-plus.global-config.db-config.field-strategy."
+    }
+  ]
+}

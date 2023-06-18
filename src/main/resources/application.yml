@@ -1,0 +1,85 @@
+server:
+  port: 9999
+spring:
+  datasource:
+    ##database
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      ## 连接池配置
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: 123456
+      url: "jdbc:mysql://localhost:3306/springo?useUnicode=true&characterEncoding=utf8\
+      &useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&failOverReadOnly=false&allowMultiQueries=true"
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      ##初始连接数 最大连接数 必须保持连接的最小值 获取连接最大等待时间（毫秒）
+      initial-size: 10
+      max-active: 30
+      min-idle: 1
+      max-wait: 30000
+      ##空闲连接回收的时间间隔
+      time-between-eviction-runs-millis: 300000
+      ##连接池空闲连接的有效时间
+      min-evictable-idle-time-millis: 900000
+      ##验证连接有效性
+      test-while-idle: true
+      ##获取连接时验证
+      test-on-borrow: true
+      ##在连接归还到连接池时是否测试该连接
+      test-on-return: false
+      validation-query: SELECT 1 FROM DUAL
+      #缓存prepareStatement
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 30
+      # 配置监控统计拦截的filters
+      filters: stat,wall
+  ##Redis
+  redis:
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        max-wait: 30000ms
+        max-active: 100
+        max-idle: 20
+        min-idle: 0
+    timeout: 3000ms
+    database: 0
+    password:
+#rocketMQ 淘宝就是这个用这个MQ做消息队列的 可以抗巨大并发  双11没有宕机过已经证明这个MQ的强大了
+rocketmq:
+  nameServer: 127.0.0.1:9876
+  producer:
+    group: order-group
+    send-message-timeout: 5000
+    retry-times-when-send-async-failed: 3
+    retry-times-when-send-failed: 3
+##mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zh.springo.pojo
+  # 全局配置
+  global-config:
+    db-config:
+      #数据库类型
+      db-type: mysql
+      #字段策略
+      field-strategy: not_empty
+      #逻辑删除
+      #删除前
+      logic-not-delete-value: 1
+      #删除后
+      logic-delete-value: 0
+  configuration:
+    # 是否自动开启驼峰命名规则映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列
+    call-setters-on-nulls: true
+    # 打印执行的sql到控制台
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    auto-mapping-behavior: full
+##log
+logging:
+  level:
+    root: info
+    com.zh.springo: debug

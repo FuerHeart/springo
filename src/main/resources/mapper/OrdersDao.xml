@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.springo.mapper.OrdersMapper">
+
+    <resultMap type="com.zh.springo.pojo.Orders" id="OrdersMap">
+        <result property="orderNo" column="orderNo" jdbcType="BIGINT"/>
+        <result property="passengers" column="passengers" jdbcType="VARCHAR"/>
+        <result property="contactName" column="contactName" jdbcType="VARCHAR"/>
+        <result property="contactPhone" column="contactPhone" jdbcType="VARCHAR"/>
+        <result property="amountPaid" column="amountPaid" jdbcType="NUMERIC"/>
+        <result property="flightId" column="flightId" jdbcType="INTEGER"/>
+        <result property="userId" column="userId" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultType="java.util.Map">
+        SELECT
+        a.*,
+        b.*,
+        c.seatC,
+        c.seatF,
+        c.seatY,
+        e.airlines_name,
+        d.cabin,
+        f.sequenceNo,
+        f.surcharge,
+        f.nextCarrier
+        FROM
+        orders AS a
+        LEFT JOIN flight AS b ON a.flightId = b.flightId
+        LEFT JOIN surplus_seats AS c ON b.flightNo = c.flightNo
+        LEFT JOIN freight_rate AS d ON b.freightRateId = d.id
+        LEFT JOIN air_airlines AS e ON b.airAirlinesId = e.id
+        LEFT JOIN freight_rules AS f ON d.id = f.sequenceNo
+        WHERE orderNo = #{orderNo}
+        <if test="userId != null and userId != ''">
+            and a.userId = #{userId}
+        </if>
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OrdersMap">
+        select
+        orderNo, passengers, contactName, contactPhone, amountPaid, flightId, userId, status,create_time
+        from orders
+        <where>
+            <if test="orderno != null">
+                and orderNo = #{orderno}
+            </if>
+            <if test="passengers != null and passengers != ''">
+                and passengers = #{passengers}
+            </if>
+            <if test="contactname != null and contactname != ''">
+                and contactName = #{contactname}
+            </if>
+            <if test="contactphone != null and contactphone != ''">
+                and contactPhone = #{contactphone}
+            </if>
+            <if test="amountpaid != null">
+                and amountPaid = #{amountpaid}
+            </if>
+            <if test="flightid != null">
+                and flightId = #{flightid}
+            </if>
+            <if test="userid != null and userid != ''">
+                and userId = #{userid}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from orders
+        <where>
+            <if test="orderno != null">
+                and orderNo = #{orderno}
+            </if>
+            <if test="passengers != null and passengers != ''">
+                and passengers = #{passengers}
+            </if>
+            <if test="contactname != null and contactname != ''">
+                and contactName = #{contactname}
+            </if>
+            <if test="contactphone != null and contactphone != ''">
+                and contactPhone = #{contactphone}
+            </if>
+            <if test="amountpaid != null">
+                and amountPaid = #{amountpaid}
+            </if>
+            <if test="flightid != null">
+                and flightId = #{flightid}
+            </if>
+            <if test="userid != null and userid != ''">
+                and userId = #{userid}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="orderNo" useGeneratedKeys="true" parameterType="com.zh.springo.pojo.Orders">
+        insert into orders(orderNo, passengers, contactName, contactPhone, amountPaid, flightId, userId, create_time)
+        values (#{orderNo}, #{passengers}, #{contactName}, #{contactPhone}, #{amountPaid}, #{flightId}, #{userId},
+                #{createTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="orderNo" useGeneratedKeys="true">/*这个KeyProperty 和 useGeneratedKeys
+        就是用来返回自增id的*/
+        insert into orders(passengers, contactName, contactPhone, amountPaid, flightId, userId, status,create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.passengers}, #{entity.contactName}, #{entity.contactPhone}, #{entity.amountPaid},
+            #{entity.flightId}, #{entity.userId}, #{entity.status},#{entity.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="orderNo" useGeneratedKeys="true">
+        insert into orders(passengers, contactName, contactPhone, amountPaid, flightId, userId, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.passengers}, #{entity.contactname}, #{entity.contactphone}, #{entity.amountpaid},
+            #{entity.flightid}, #{entity.userid}, #{entity.status})
+        </foreach>
+        on duplicate key update
+        passengers = values(passengers),
+        contactName = values(contactName),
+        contactPhone = values(contactPhone),
+        amountPaid = values(amountPaid),
+        flightId = values(flightId),
+        userId = values(userId),
+        status = values(status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update orders
+        <set>
+            <if test="passengers != null and passengers != ''">
+                passengers = #{passengers},
+            </if>
+            <if test="contactname != null and contactname != ''">
+                contactName = #{contactname},
+            </if>
+            <if test="contactphone != null and contactphone != ''">
+                contactPhone = #{contactphone},
+            </if>
+            <if test="amountpaid != null">
+                amountPaid = #{amountpaid},
+            </if>
+            <if test="flightid != null">
+                flightId = #{flightid},
+            </if>
+            <if test="userid != null and userid != ''">
+                userId = #{userid},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where orderNo = #{orderno}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from orders
+        where orderNo = #{orderno}
+    </delete>
+
+</mapper>
+
