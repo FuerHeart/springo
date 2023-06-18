@@ -42,11 +42,3 @@ $ yarn generate
 ## 版本控制
 
 该项目使用Git进行版本管理。您可以在repository参看当前可用版本。
-
-## 演示截图
-
-![首页](D:\Desktop\项目最新进展\前端\springo-web\assets\images\首页.png)
-
-![航班列表](D:\Desktop\项目最新进展\前端\springo-web\assets\images\航班列表.png)
-
-![添加乘机人](D:\Desktop\项目最新进展\前端\springo-web\assets\images\添加乘机人.png)
