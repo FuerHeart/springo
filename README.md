@@ -22,8 +22,8 @@ $ yarn generate
 
 浏览器访问 http://localhost:3000
 
-## 前端技术栈
-
+## 前端技术栈 
+# springo-web
 * Nuxtjs
 * Vue
 * Vue-router
@@ -32,7 +32,7 @@ $ yarn generate
 * Token
 
 ## 后端技术栈
-
+# springo
 * Spring Boot
 * MySQL
 * Mybatis-Plus
@@ -45,8 +45,8 @@ $ yarn generate
 
 ## 演示截图
 
-![首页](D:\Desktop\项目最新进展\前端\springo-web\assets\images\首页.png)
+![首页](https://github.com/FuerHeart/springo/blob/master/springo-web/assets/images/首页.png)
 
-![航班列表](D:\Desktop\项目最新进展\前端\springo-web\assets\images\航班列表.png)
+![航班列表](https://github.com/FuerHeart/springo/blob/master/springo-web/assets/images/航班列表.png)
 
-![添加乘机人](D:\Desktop\项目最新进展\前端\springo-web\assets\images\添加乘机人.png)
+![添加乘机人](https://github.com/FuerHeart/springo/blob/master/springo-web/assets/images/添加乘机人.png)
